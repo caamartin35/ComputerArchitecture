@@ -1,0 +1,470 @@
+#include <stdio.h>
+#include "shell.h"
+#include <stdlib.h>
+
+//function declarations
+char* parse_opcode(uint32_t instruction);
+void special_op(uint32_t instruction);
+void ls_op(uint32_t instruction);
+void jb_op(uint32_t instruction);
+void regimm_op(uint32_t instruction);
+void immediate_op(uint32_t instruction);
+uint32_t sign_extend(uint32_t half_word);
+uint32_t byte_sign_extend(uint32_t byte);
+
+void process_instruction(){
+ 
+  char* op_type = malloc(10*sizeof(char));
+  uint32_t instruction;
+
+  instruction = mem_read_32(CURRENT_STATE.PC);
+  op_type = parse_opcode(instruction);
+
+  switch(*op_type) {
+
+  case 'S': 
+    special_op(instruction);
+    break;
+  case 'R':
+    regimm_op(instruction);
+    break;
+  case 'J':
+    jb_op(instruction);
+    break;
+  case 'I':
+    immediate_op(instruction);
+    break;
+  case 'L':
+    ls_op(instruction);
+    break;
+  default:
+    printf("INSTRUCTION NOT RECOGNIZED!\n");
+  }
+}
+void special_op(uint32_t instruction){
+  uint32_t opcode = instruction &0x0000003F;
+  uint32_t rt, rt_val, rs, rs_val, rd, rd_val, sa, sa_val, type, link_reg;
+  int rt_signed, rs_signed;
+  signed int a, b, c, d, au, bu, cu, du;
+  signed int  mult_db, mult_da, mult_cb,  mult_ca;
+  uint_32 multu_db, multu_da, multu_cb, multu_ca;
+  rs = (instruction >> 21) & 0x0000001F;
+  rt = (instruction >> 16) & 0x0000001F;
+  rd = (instruction >> 11) & 0x0000001F;
+  sa = (instruction >> 6) & 0x0000001F;
+  rs_val = CURRENT_STATE.REGS[rs];
+  rt_val = CURRENT_STATE.REGS[rt];
+  rd_val = CURRENT_STATE.REGS[rd];
+  link_reg = CURRENT_STATE.REGS[31];
+  rt_signed = rt_val;
+  rs_signed = rs_val;
+  a = (rs_signed >> 16) & 0x0000FFFF;
+  b = (rs_signed & 0x0000FFFF);
+  c = (rt_signed >> 16) & 0x0000FFFF;
+  d = (rt_signed & 0x0000FFFF);
+  mult_db = d*b;
+  mult_da = d*a;
+  mult_cb = c*b;
+  mult_ca = c*a;
+  au = (rs_val >> 16) & 0x0000FFFF;
+  bu = (rs_val & 0x0000FFFF);
+  cu = (rt_val >> 16) & 0x0000FFFF;
+  du = (rt_val & 0x0000FFFF);
+  multu_db = du*bu;
+  multu_da = du*au;
+  multu_cb = cu*bu;
+  multu_ca = cu*au;
+
+  NEXT_STATE.PC = CURRENT_STATE.PC + 4;
+
+  switch(opcode){
+  case 0: //SLL
+    rd_val = rt_val << sa;
+    break;
+  case 2: //SRL
+    rd_val = rt_val >> sa;
+    break;
+  case 3: //SRA
+    rd_val = rt_signed >> sa;
+    break;
+  case 4: //SLLV
+    rd_val = rt_val << (rs_val & 0x0000001F);
+    break;
+  case 6: //SRLV
+    rd_val = rt_val >> (rs_val & 0x0000001F);
+    break;
+  case 7: //SRAV
+    rd_val = rt_signed >> (rs_val & 0x0000001F);
+    break;
+  case 8: //JR
+    if (rs_val != (rs_val & 0xFFFFFFFC)) printf("ADDRESS NOT VALID FOR JUMP!\n");
+    else NEXT_STATE.PC = rs_val;
+    break;
+  case 9: //JALR
+    if (rd == 0) link_reg = CURRENT_STATE.PC + 4;
+    else rd_val = CURRENT_STATE.PC + 4;
+    
+    if (rs_val != (rs_val & 0xFFFFFFFC)) printf("ADDRESS NOT VALID FOR JUMP!\n");
+    else NEXT_STATE.PC = rs_val;
+    break;
+  case 32: //ADD
+    if (rs_val >= 0x80000000 && rt_val >= 0x80000000 && rs_val + rt_val < 0x80000000){
+      printf("ADD OVERFLOW!\n");
+    }
+    else if (rs_val < 0x80000000 && rt_val < 0x80000000 && rs_val + rt_val >= 0x80000000){
+      printf("ADD OVERFLOW!\n");
+    }
+    else rd_val = rt_val + rs_val;
+    break;
+  case 33: //ADDU
+    rd_val = rt_val + rs_val;
+    break;
+  case 34: //SUB
+    if (rs_val < 0x80000000 && rt_val >= 0x80000000 && rs_val - rt_val >= 0x80000000){
+      printf("SUB OVERFLOW!\n");
+    }
+    else if (rs_val >= 0x80000000 && rt_val < 0x80000000 && rs_val - rt_val < 0x80000000){
+      printf("SUB OVERFLOW!\n");
+    }
+    else rd_val = rs_val - rt_val;
+    break;
+  case 35: //SUBU
+    rd_val = rs_val - rt_val;
+    break;
+  case 36: //AND
+    rd_val = rs_val & rt_val;
+    break;
+  case 37: //OR
+    rd_val = rs_val | rt_val;
+    break;
+  case 38: //XOR
+    rd_val = rs_val ^ rt_val;
+    break;
+  case 39: // NOR
+    rd_val = ~(rs_val | rt_val);
+    break;
+  case 42: //SLT
+    if (rs_signed - rt_signed < 0) rd_val = 1;
+    else rd_val = 0;
+    break;
+  case 43: //SLTU
+    if (rs_val - rt_val >= 0x80000000) rd_val = 1;
+    else rd_val = 0;
+    break;
+  case 24: //MULT
+    NEXT_STATE.HI = mult_ca + (mult_cb >> 16) + (mult_da >> 16);
+    NEXT_STATE.LO = mult_db + (mult_da << 16) + (mult_cb << 16);
+
+    //check carryout
+    if (((mult_db + (mult_da << 16)) & (mult_cb << 16)) >> 31 && 1) NEXT_STATE.HI += 1;
+
+    break;
+  case 25: //MULTU
+    NEXT_STATE.HI = multu_ca + (multu_cb >> 16) + (multu_da >> 16);
+    NEXT_STATE.LO = multu_db + (multu_da << 16) + (multu_cb >> 16);
+
+    if (((multu_db + (multu_da << 16)) & (multu_cb << 16)) >> 31 && 1) NEXT_STATE.HI += 1;
+    break;
+  case 16: //MFHI
+    rd_val = CURRENT_STATE.HI;
+    break;
+  case 18: //MFLO
+    rd_val = CURRENT_STATE.LO;
+    break;
+  case 17: //MTHI
+    NEXT_STATE.HI = rs_val;
+    break;
+  case 19: //MTLO
+    NEXT_STATE.LO = rs_val;
+    break;
+  case 26: //DIV
+    if (rt_val != 0){
+      NEXT_STATE.LO = rs_signed/rt_signed;
+      NEXT_STATE.HI = rs_signed%rt_signed;
+    }
+    break;
+  case 27: //DIVU
+    if (rt_val != 0){
+      NEXT_STATE.LO = rs_val/rt_val;
+      NEXT_STATE.HI = rs_val%rt_val;
+    }
+    break;
+  case 12: //SYSCALL
+    if (CURRENT_STATE.REGS[2] == 0x0A) RUN_BIT = 0;
+    break;
+  default:
+    printf("INSTRUCTION NOT RECOGNIZED!\n");
+  }
+
+  NEXT_STATE.REGS[rd] = rd_val;
+}
+
+void ls_op(uint32_t instruction){
+  uint32_t opcode = instruction >> 26;
+  uint32_t offset = sign_extend(instruction & 0x0000FFFF);
+  uint32_t base_reg = (instruction >> 21) & 0x0000001F;
+  uint32_t base_val = CURRENT_STATE.REGS[base_reg];
+  uint32_t addr = base_val + offset;
+  uint32_t addr_aligned = addr & 0xFFFFFFFC;
+  uint32_t word_read, word_to_write;
+  uint32_t rt = (instruction >> 16) & 0x0000001F;
+  uint32_t rt_val = CURRENT_STATE.REGS[rt];
+  uint32_t shift = addr - addr_aligned;
+  
+  
+  word_read = mem_read_32(addr_aligned);
+  word_to_write = ((rt_val << 8*shift) & (0x000000FF << 8*shift)) | ((word_read | (0x000000FF << 8*shift)) ^ (0x000000FF << 8*shift)); 
+  switch(opcode){
+
+  case 0x20: //LB
+    rt_val = byte_sign_extend((word_read >> 8*shift) & 0x000000FF);
+    break;
+
+  case 0x21: //LH
+    rt_val = sign_extend((word_read >> 8*shift) & 0x0000FFFF);
+    break;
+
+  case 0x23: //LW
+    rt_val = word_read;
+    break;
+
+  case 0x24: //LBU
+    rt_val = (word_read >> 8*shift) & 0x000000FF;
+    break;
+
+  case 0x25: //LHU
+    rt_val = (word_read >> 8*shift) & 0x0000FFFF;
+    break;
+
+  case 0x28: //SB
+    word_to_write = ((rt_val << 8*shift) & (0x000000FF << 8*shift)) | ((word_read | (0x000000FF << 8*shift)) ^ (0x000000FF << 8*shift));
+    mem_write_32(addr_aligned, word_to_write);
+    break;
+  case 0x29: //SH
+    word_to_write = ((rt_val << 8*shift) & (0x0000FFFF << 8*shift)) | ((word_read | (0x0000FFFF << 8*shift)) ^ (0x0000FFFF << 8*shift));
+    mem_write_32(addr_aligned, word_to_write);
+    break;
+  case 0x2B: //SW
+    word_to_write = rt_val;
+    mem_write_32(addr_aligned, word_to_write);
+    break;
+
+  default:
+    printf("INSTRUCTION NOT RECOGNIZED!\n");
+  }
+
+  //update cpu state
+  NEXT_STATE.PC = CURRENT_STATE.PC + 4;
+  NEXT_STATE.REGS[rt] = rt_val;
+  
+}
+  
+//takes care of all immediate operations
+void immediate_op(uint32_t instruction){
+  uint32_t opcode = instruction >> 26;
+  uint32_t rs, rs_val, rt, rt_val, branch_addr, immediate, immediate_extend;
+  int rs_val_signed, immediate_signed;
+  rs = (instruction >> 21) & 0x0000001F;
+  rt = (instruction >> 16) & 0x0000001F;
+  immediate = instruction & 0x0000FFFF;
+  rs_val = CURRENT_STATE.REGS[rs];
+  immediate_extend = sign_extend(immediate);
+  immediate_signed = immediate_extend;
+  rs_val_signed = rs_val;
+  
+  switch(opcode){
+
+  case 8: //ADDI
+    if (immediate_extend >= 0x80000000 && rs_val >= 0x80000000 && immediate_extend + rs_val < 0x80000000){
+      rt_val = CURRENT_STATE.REGS[rt];
+      printf("ADD OVERFLOW!\n");
+    }
+    else if (immediate_extend < 0x80000000 && rs_val < 0x80000000 && immediate_extend + rs_val >= 0x80000000){
+      rt_val = CURRENT_STATE.REGS[rt];
+      printf("ADD OVERFLOW!\n");
+    }
+    else rt_val = rs_val + immediate_extend;
+    break;
+
+  case 9: //ADDIU
+    rt_val = rs_val + immediate_extend;
+    break;
+
+  case 10: //SLTI
+    if (rs_val_signed - immediate_signed < 0) rt_val = 1;
+    else rt_val = 0;
+    break;
+
+  case 11: //SLTIU
+    if (rs_val - immediate_extend >= 0x80000000) rt_val = 1;
+    else rt_val = 0;
+    break;
+
+  case 12: //ANDI
+    rt_val = rs_val & immediate;
+    break;
+
+  case 13: //ORI
+    rt_val = rs_val | immediate;
+    break;
+
+  case 14: //XORI
+    rt_val = rs_val ^ immediate;
+    break;
+
+  case 15: //LUI
+    rt_val = (immediate << 16) & 0xFFFF0000;
+    break;
+
+  default:
+    printf("INSTRUCTION NOT RECOGNIZED!\n");
+  }
+
+  //update cpu next state
+  NEXT_STATE.PC = CURRENT_STATE.PC + 4;
+  NEXT_STATE.REGS[rt] = rt_val;
+
+}
+
+//takes care of all jump and branch operations, besides the ones
+//included in regimm
+void jb_op(uint32_t instruction){
+  uint32_t opcode = instruction >> 26;
+  uint32_t rs, rs_val, rt, rt_val, offset, offset_extended, target, target_addr, branch_addr, link_reg;
+  rs = (instruction >> 21) & 0x0000001F;
+  rt = (instruction >> 16) & 0x0000001F;
+  offset = instruction & 0x0000FFFF;
+  target = (instruction & 0x03FFFFFF) << 2;
+  link_reg = CURRENT_STATE.REGS[31];
+  offset_extended = sign_extend(offset);
+  branch_addr = CURRENT_STATE.PC + (offset_extended + 1)*4;
+
+  //take care of the jump operations
+  if (opcode == 2 || opcode == 3) {
+    target_addr = (CURRENT_STATE.PC & 0xF0000000) | target;
+    if (opcode == 3) link_reg = CURRENT_STATE.PC + 4;
+  }
+
+  //take care of the branch operations (FIX with proper sign extensions)
+  else {
+    rs_val = CURRENT_STATE.REGS[rs];
+    rt_val = CURRENT_STATE.REGS[rt];
+    switch(opcode){
+    case 4: //BEQ
+      if (rt_val == rs_val) target_addr = branch_addr;
+      else target_addr = CURRENT_STATE.PC + 4;
+      break;
+    case 5: //BNE
+      if (rt_val != rs_val) target_addr = branch_addr;
+      else target_addr = CURRENT_STATE.PC + 4;
+      break;
+    case 6: //BLEZ
+      if (rs_val == 0 || rs_val >= 0x80000000) target_addr = branch_addr;
+      else target_addr = CURRENT_STATE.PC + 4;
+      break;
+    case 7: //BGTZ
+      if (rs_val == 0 || rs_val >= 0x80000000) target_addr = CURRENT_STATE.PC + 4;
+      else target_addr = branch_addr;
+      break;
+    default:
+      printf("INSTRUCTION NOT RECOGNIZED!\n");
+    }
+  }
+
+  //update next state
+  NEXT_STATE.PC = target_addr;
+  NEXT_STATE.REGS[31] = link_reg;
+
+      
+}
+
+
+
+
+//takes care of all regimm operations
+void regimm_op(uint32_t instruction){
+  uint32_t opcode, rs, rs_val, offset, offset_extended, target_addr, branch_addr, link_reg;
+  opcode = (instruction >> 16) & 0x0000001F;
+  rs = (instruction >> 21) & 0x0000001F;
+  offset = instruction & 0x0000FFFF;
+  rs_val = CURRENT_STATE.REGS[rs];
+  offset_extended = sign_extend(offset);
+
+  //find address if branch is taken
+  branch_addr = CURRENT_STATE.PC + (offset_extended + 1)*4; 
+
+  //determine for each branch type whether or not we take the branch (REDO WITH PROPER SIGN EXTENSIONS
+  switch(opcode) {
+  case 0: //BLTZ
+    if (rs_val >= 0x80000000) target_addr = branch_addr;
+    else target_addr = CURRENT_STATE.PC + 4;
+    link_reg = CURRENT_STATE.REGS[31];
+    break;
+  case 1: //BGEZ
+    if (rs_val < 0x80000000) target_addr = branch_addr;
+    else target_addr = CURRENT_STATE.PC + 4;
+    link_reg = CURRENT_STATE.REGS[31];
+    break;
+  case 0x10: //BLTZAL
+    if (rs_val >= 0x80000000) target_addr = branch_addr;
+    else target_addr = CURRENT_STATE.PC + 4;
+    link_reg = CURRENT_STATE.PC + 4;
+    break;
+  case 0x11: //BGEZAL
+    if (rs_val < 0x80000000) target_addr = branch_addr;
+    else target_addr = CURRENT_STATE.PC + 4;
+    link_reg = CURRENT_STATE.PC + 4;
+    break;
+  default:
+    printf("INSTRUCTION NOT RECOGNIZED!\n");
+    link_reg = CURRENT_STATE.REGS[31];
+    target_addr = CURRENT_STATE.PC + 4;
+  }
+  
+  //update CPU state
+  NEXT_STATE.PC = target_addr;
+  NEXT_STATE.REGS[31] = link_reg;
+}
+
+
+
+//parse the opcode and return a string representing 
+//the type of command we are executing (SPECIAL, REGIMM, NORMAL)
+char* parse_opcode(uint32_t instruction) {
+  uint32_t opcode = instruction >> 26;
+  uint32_t specifier = opcode >> 3;
+
+  //opcode tells us if it is special, regimm, or normal, 
+  //specifier goes a level deeper and disects the normal group into 
+  //immediates, branches/jumps, and load/stores
+  switch(opcode){
+  case 0: 
+    return "SPECIAL";
+    break;
+  case 1: 
+    return "REGIMM";
+    break;
+  default:
+
+    switch(specifier){
+    case 0:
+      return "JB";
+      break;
+    case 1: 
+      return "IMMEDIATE";
+      break;
+    default:
+      return "LS";
+    }
+  }
+}
+
+uint32_t sign_extend(uint32_t half_word){
+  if (half_word >= 0x8000) return (half_word | 0xFFFF0000);
+  else return half_word;
+}
+
+uint32_t byte_sign_extend(uint32_t byte){
+  if (byte >= 0x80) return (byte | 0xFFFFFF00);
+  else return byte;
+}

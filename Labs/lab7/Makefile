@@ -1,0 +1,17 @@
+SRC = $(wildcard src/*.c)
+INPUT ?= $(wildcard 447inputs/*/*.x)
+
+.PHONY: all verify clean
+
+all: sim
+
+sim: $(SRC)
+	gcc -std=c99 -g -O2 $^ -o $@ > out.txt
+
+verify: sim
+	@./verify $(INPUT)
+
+verify_6: sim
+	@./verify_6 $(INPUT)
+clean:
+	rm -rf *.o *~ sim

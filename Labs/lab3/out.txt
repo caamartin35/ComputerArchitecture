@@ -1,0 +1,53 @@
+[1;32m18-477 Makefile: [0mCopying Verilog into outputs/0301-183818...
+[1;32m18-477 Makefile: [0mCompiling Verilog...
+cd outputs/0301-183818/sim; ncvlog -linedebug -messages -incdir src src/*.v
+ncvlog: 08.20-s015: (c) Copyright 1995-2009 Cadence Design Systems, Inc.
+file: src/exception_unit.v
+	module worklib.exception_unit
+		errors: 0, warnings: 0
+file: src/mips_core.v
+	module worklib.mips_core
+		errors: 0, warnings: 0
+	module worklib.mem_write_controller
+		errors: 0, warnings: 0
+	module worklib.memory_processor
+		errors: 0, warnings: 0
+	module worklib.mux
+		errors: 0, warnings: 0
+	module worklib.mips_ALU
+		errors: 0, warnings: 0
+	module worklib.register
+		errors: 0, warnings: 0
+	module worklib.ctrl_ex_register
+		errors: 0, warnings: 0
+	module worklib.ctrl_mem_register
+		errors: 0, warnings: 0
+	module worklib.ctrl_wb_register
+		errors: 0, warnings: 0
+	module worklib.add_const
+		errors: 0, warnings: 0
+file: src/mips_decode.v
+6/*
+|
+ncvlog: *E,EXPMPA (src/mips_decode.v,1|0): expecting the keyword 'module', 'macromodule' or 'primitive'[A.1].
+	module worklib.mips_decode
+		errors: 0, warnings: 0
+file: src/mips_mem.v
+	module worklib.mips_mem
+		errors: 0, warnings: 0
+file: src/multiply_coprocessor.v
+	module worklib.multiply_coprocessor
+		errors: 0, warnings: 0
+file: src/regfile.v
+	module worklib.regfile
+		errors: 0, warnings: 0
+file: src/syscall_unit.v
+	module worklib.syscall_unit
+		errors: 0, warnings: 0
+file: src/testbench.v
+	module worklib.testbench
+		errors: 0, warnings: 0
+	module worklib.clock
+		errors: 0, warnings: 0
+	Total errors/warnings found outside modules and primitives:
+		errors: 1, warnings: 0

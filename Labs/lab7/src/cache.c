@@ -1,0 +1,425 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+#include <math.h>
+#include <limits.h>
+#include <string.h>
+#include "cache.h"
+#include "core.h"
+#include "pipe.h"
+#include "l2.h"
+#include "processor.h"
+#include "defines.h"
+
+void init_l1_caches(){
+  int i;
+  int j;
+
+  for (i=0; i<64; i++){
+    for (j=0; j<4; j++){
+      init_cache_block(&(core->l1_inst_cache.blocks[i][j]));
+    }
+  }
+
+  for (i=0; i<256; i++){
+    for (j=0; j<8; j++){
+      init_cache_block(&(core->l1_inst_cache.blocks[i][j]));
+    }
+  }
+
+  //init instruction MSHR
+  core->l1_inst_cache.miss.v = 0;
+  core->l1_inst_cache.miss.done = 0;
+  core->l1_inst_cache.miss.miss_cycles = 0;
+  core->l1_inst_cache.miss.zero = 0;
+  core->l1_inst_cache.miss.pc_mem_addr = 0;
+  core->l1_inst_cache.miss.is_inst = 0;
+  core->l1_inst_cache.miss.is_write = 0;
+
+  //init data MSHR
+  core->l1_data_cache.miss.v = 0;
+  core->l1_data_cache.miss.done = 0;
+  core->l1_data_cache.miss.miss_cycles = 0;
+  core->l1_data_cache.miss.zero = 0;
+  core->l1_data_cache.miss.pc_mem_addr = 0;
+  core->l1_data_cache.miss.is_inst = 0;
+  core->l1_data_cache.miss.is_write = 0;
+}
+
+void init_cache_block(struct block* block){
+  block->v = 0;
+  block->tag = 0;
+  block->timestamp = 0;
+  block->dirty = 0;
+  block->state = INVALID;
+  for (int i=0; i<8; i++){
+    block->data[i] = 0;
+  }
+}
+struct block* data_check(uint32_t addr){
+  int col;
+  int setIndex;
+  int tag;
+  int retVal;
+
+  setIndex = (addr >> 5) & 0xff;
+  tag = (addr >> 13);
+
+  //iterate through the blocks.                                                                                                                                        
+  for (col=0; col<8; col++){
+
+
+    //check each block to see if it is a hit.                                                                                            
+    if ((core->l1_data_cache.blocks[setIndex][col]).tag == tag){
+      if ((core->l1_data_cache.blocks[setIndex][col]).v == 1){
+        return &(core->l1_data_cache.blocks[setIndex][col]);
+      }
+    }
+  }
+  core->l1_data_cache.miss.v = 1;
+  core->l1_data_cache.miss.zero = 0;
+  core->l1_data_cache.miss.pc_mem_addr = addr;
+  core->l1_data_cache.miss.miss_cycles = 0;
+  core->l1_data_cache.miss.done = 0;
+  core->l1_data_cache.miss.is_inst = 0;
+  core->l1_data_cache.miss.is_write = core->pipe.mem_op->mem_write;
+  l1_miss_process(&(core->l1_data_cache.miss));
+  return NULL;
+}
+
+struct block* data_probe(uint32_t addr){
+  int col;
+  int setIndex;
+  int tag;
+  int retVal;
+
+  setIndex = (addr >> 5) & 0xff;
+  tag = (addr >> 13);
+
+  //iterate through the blocks.                                                     
+  for (col=0; col<8; col++){
+
+
+    //check each block to see if it is a hit.                                                                        
+    if ((core->l1_data_cache.blocks[setIndex][col]).tag == tag){
+      if ((core->l1_data_cache.blocks[setIndex][col]).v == 1){
+        return &(core->l1_data_cache.blocks[setIndex][col]);
+      }
+    }
+  }
+  return NULL;
+}
+
+void data_load(uint32_t addr, int state, uint32_t* data){
+  struct block *LRU;
+  int col;
+  int setIndex;
+  int tag;
+  struct block* hit;
+
+  setIndex = (addr >> 5) & 0xff;
+  tag = (addr >> 13);
+
+  //iterate through the blocks.                                                                                                                                        
+  for (col=0; col<8; col++){
+
+    //set our LRU block to first block in set.                                                                                                                        
+    if (col == 0){
+      LRU = core->l1_data_cache.blocks[setIndex];
+    }
+
+    //check each block to see if it is a hit.                                                                                                                         
+    if ((core->l1_data_cache.blocks[setIndex][col]).tag == tag){
+      if ((core->l1_data_cache.blocks[setIndex][col]).v == 1){
+        hit = &(core->l1_data_cache.blocks[setIndex][col]);
+        if (core->l1_data_cache.blocks[setIndex][col].state == MODIFIED && state == SHARED){
+          l2_writeback(&(core->l1_data_cache.blocks[setIndex][col]));
+        }
+      }
+    }
+    
+    //reset LRU if timestamp is less(older) on current block                                                                                                          
+    if ((*LRU).timestamp > (core->l1_data_cache.blocks[setIndex][col]).timestamp){
+      LRU = core->l1_data_cache.blocks[setIndex]+col;
+    }
+
+  }
+  if (hit != NULL){
+    hit->timestamp = processor.time;
+    hit->state = state;
+    hit->v = 1;
+    hit->pc_mem_addr = hit->pc_mem_addr;
+    for (int i=0; i<8; i++)
+      hit->data[i] = data[i];
+  }
+  else {
+    LRU->dirty = 0;
+    if (LRU->v == 1){
+      if (LRU->state == MODIFIED)
+        l2_writeback(LRU);
+    }
+
+    //resetting the least recently used block 
+    LRU->pc_mem_addr = addr;                                                                                                                         
+    LRU->v = 1;
+    LRU->tag = tag;
+    LRU->timestamp = processor.time;
+    LRU->state = state;
+    for (int i=0; i<8; i++)
+      LRU->data[i] = data[i];
+  }
+}
+
+//checks if the cache will have a hit or miss, returns 1 on hit, 0 on miss
+struct block* inst_probe(uint32_t pc){
+  int col;
+  int setIndex;
+  int tag;
+  int retVal;
+
+  setIndex = (pc >> 5) & 0x3f;
+  tag = (pc >> 11);
+  //iterate through the blocks.                                                                                                                                       
+  for (col=0; col<4; col++){
+
+    //check each block to see if it is a hit.                                                                                                                         
+    if ((core->l1_inst_cache.blocks[setIndex][col]).tag == tag){
+      if ((core->l1_inst_cache.blocks[setIndex][col]).v == 1){
+        return &(core->l1_inst_cache.blocks[setIndex][col]);
+      }
+    }
+  }
+  return NULL;
+}
+
+struct block* inst_check(uint32_t pc){
+  int col;
+  int setIndex;
+  int tag;
+  int retVal;
+
+  setIndex = (pc >> 5) & 0x3f;
+  tag = (pc >> 11);
+  //iterate through the blocks.                                                                                                                     
+  for (col=0; col<4; col++){
+
+    //check each block to see if it is a hit.                                                                                                     
+    if ((core->l1_inst_cache.blocks[setIndex][col]).tag == tag){
+      if ((core->l1_inst_cache.blocks[setIndex][col]).v == 1){
+        return &(core->l1_inst_cache.blocks[setIndex][col]);
+      }
+    }
+  }
+  core->l1_inst_cache.miss.v = 1;
+  core->l1_inst_cache.miss.zero = 0;
+  core->l1_inst_cache.miss.pc_mem_addr = pc;
+  core->l1_inst_cache.miss.miss_cycles = 0;
+  core->l1_inst_cache.miss.done = 0;
+  core->l1_inst_cache.miss.is_inst = 1;
+  core->l1_inst_cache.miss.is_write = 0;
+  l1_miss_process(&(core->l1_inst_cache.miss));
+  return NULL;
+}
+
+//loads the instruction from the cache. returns 1 if it was a cache hit, 0 otherwise
+void inst_load(uint32_t pc, int state){
+  
+  int col;
+  int setIndex;
+  int tag;
+  struct block *LRU;
+  struct block *hit;
+  int lruSet;
+  unsigned char* in = malloc(32*sizeof(unsigned char));
+
+  setIndex = (pc >> 5) & 0x3f;
+  tag = (pc >> 11);
+
+  //iterate through the blocks.
+  for (col=0; col<4; col++){
+
+    //set our LRU block to first block in set.
+    if (col == 0){
+      lruSet = 0;
+      LRU = core->l1_inst_cache.blocks[setIndex];
+    }
+
+    //check each block to see if it is a hit.                                                                                                                         
+    if ((core->l1_inst_cache.blocks[setIndex][col]).tag == tag){
+      if ((core->l1_inst_cache.blocks[setIndex][col]).v == 1){
+        hit = &(core->l1_inst_cache.blocks[setIndex][col]);
+        if (core->l1_inst_cache.blocks[setIndex][col].state == MODIFIED && state == SHARED){
+          l2_writeback(hit);
+        }
+      }
+    }
+    //reset LRU if timestamp is less(older) on current block
+    if ((*LRU).timestamp > (core->l1_inst_cache.blocks[setIndex][col]).timestamp){
+      LRU = core->l1_inst_cache.blocks[setIndex]+col;
+    }
+  }
+
+  if (hit != NULL){
+    hit->timestamp = processor.time;
+    hit->state = state;
+    hit->v = 1;
+    read_block_from_mem(hit->pc_mem_addr, core->transfer);
+    for (int i=0; i<8; i++){
+      hit->data[i] = core->transfer[i];
+    }
+  }
+  else {
+    LRU->dirty = 0;
+    if (LRU->v == 1) {
+      if (LRU->state == MODIFIED)
+	l2_writeback(LRU);
+    }
+    //resetting the least recently used block
+    read_block_from_mem(LRU->pc_mem_addr, core->transfer);
+    for (int i=0; i<8; i++){
+      LRU->data[i] = core->transfer[i];
+    }
+    LRU->pc_mem_addr = pc;
+    LRU->v = 1;
+    LRU->tag = tag;
+    LRU->timestamp = processor.time;
+    LRU->state = state;
+  }
+}
+
+int check_for_l2_misses(struct MSHR* miss){
+  for(int i=0; i<16; i++){
+    if ((processor.l2.misses[i].pc_mem_addr >> 5) == (miss->pc_mem_addr >> 5)) return 1;
+  }
+  return 0;
+}
+
+void l1_miss_process(struct MSHR* miss){
+  int current_core = core->core_num;
+  int found = -1;
+  struct block* block;
+
+  //step 1
+  if (!miss->is_inst){
+    if (processor.core0.l1_data_cache.miss.v &&
+      processor.core0.l1_data_cache.miss.is_write && 
+        (processor.core0.l1_data_cache.miss.pc_mem_addr >> 5) == (miss->pc_mem_addr >> 5)){
+            return;
+      }
+      if (processor.core1.l1_data_cache.miss.v &&
+      processor.core1.l1_data_cache.miss.is_write && 
+        (processor.core1.l1_data_cache.miss.pc_mem_addr >> 5) == (miss->pc_mem_addr >> 5)){
+            return;
+      }
+      if (processor.core2.l1_data_cache.miss.v &&
+      processor.core2.l1_data_cache.miss.is_write && 
+        (processor.core2.l1_data_cache.miss.pc_mem_addr >> 5) == (miss->pc_mem_addr >> 5)){
+            return;
+      }
+      if (processor.core3.l1_data_cache.miss.v &&
+      processor.core3.l1_data_cache.miss.is_write && 
+        (processor.core3.l1_data_cache.miss.pc_mem_addr >> 5) == (miss->pc_mem_addr >> 5)){
+            return;
+      }
+    if (miss->is_write){
+      if (processor.core0.l1_data_cache.miss.v &&
+        !processor.core0.l1_data_cache.miss.is_write && 
+          (processor.core0.l1_data_cache.miss.pc_mem_addr >> 5) == (miss->pc_mem_addr >> 5)){
+              return;
+        }
+        if (processor.core1.l1_data_cache.miss.v &&
+        !processor.core1.l1_data_cache.miss.is_write && 
+          (processor.core1.l1_data_cache.miss.pc_mem_addr >> 5) == (miss->pc_mem_addr >> 5)){
+              return;
+        }
+        if (processor.core2.l1_data_cache.miss.v &&
+        !processor.core2.l1_data_cache.miss.is_write && 
+          (processor.core2.l1_data_cache.miss.pc_mem_addr >> 5) == (miss->pc_mem_addr >> 5)){
+              return;
+        }
+        if (processor.core3.l1_data_cache.miss.v &&
+        !processor.core3.l1_data_cache.miss.is_write && 
+          (processor.core3.l1_data_cache.miss.pc_mem_addr >> 5) == (miss->pc_mem_addr >> 5)){
+              return;
+        }
+    }
+  }
+
+  //step2
+  if (check_for_l2_misses(miss)) return;
+
+  //step3
+  if (processor.l2.num_misses == 16) return;
+
+  //step4
+  for (int i=0; i<4; i++){
+    if (i != current_core){
+      set_active_core(i);
+      if (miss->is_inst)
+        if (block = inst_probe(miss->pc_mem_addr)){
+          found = i;
+          break;
+        }
+      else
+        if (block = data_probe(miss->pc_mem_addr)){
+          found = i;
+          break;
+        }
+    }
+  }
+  set_active_core(current_core);
+
+
+  if (found >= 0){
+
+    for (int i=0; i<4; i++){
+      set_active_core(i);
+
+      //step 4a
+      if (!miss->is_write){
+        if (miss->is_inst)
+          inst_load(miss->pc_mem_addr, SHARED);
+        else 
+          data_load(miss->pc_mem_addr, SHARED, block->data);      
+      }
+
+      //step 4b
+      else{
+        if (i == current_core){
+          if (miss->is_inst)
+            if (block->state == MODIFIED) inst_load(miss->pc_mem_addr, MODIFIED);
+            else inst_load(miss->pc_mem_addr, EXCLUSIVE);
+          else 
+            if (block->state == MODIFIED) data_load(miss->pc_mem_addr, MODIFIED, block->data);
+            else data_load(miss->pc_mem_addr, EXCLUSIVE, block->data);
+        }
+        else {
+          if (miss->is_inst)
+            inst_load(miss->pc_mem_addr, INVALID);
+          else 
+            data_load(miss->pc_mem_addr, INVALID, 0);
+        }
+      }
+    } 
+    set_active_core(current_core);
+
+    if (miss->is_inst)
+      core->l1_inst_cache.miss.miss_cycles = 5;
+    else 
+      core->l1_data_cache.miss.miss_cycles = 5;
+
+  }
+
+  //step5 and step6
+  else {
+    if (miss->is_inst)
+      l2_check(miss->pc_mem_addr, 1);
+    else 
+      l2_check(miss->pc_mem_addr, 0);
+  }
+
+  
+}
+
+  
+  

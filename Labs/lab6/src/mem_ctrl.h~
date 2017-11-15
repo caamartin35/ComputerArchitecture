@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <stdint.h> 
+#include "l2.h"
+#include "dram.h"
+#include "pipe.h"
+#include "cache.h"
+#include "masks.h"
+
+typedef struct Request{
+  uint32_t row;
+  int bank;
+  uint32_t time;
+  uint32_t process_count;
+  int source;
+  MSHR* reg_ptr;
+} Request;
+
+typedef struct Queue{
+  uint32_t requests;
+  uint32_t capacity;
+  Request** queue;
+} Queue;
+
+Queue *q;
+Queue *processQ;
+DRAM *dram;
+closed_row_needed *crn;
+row_hit_needed *rhn;
+row_miss_needed *rmn;
+int request_index;
+//init
+void mem_ctrl_init();
+void dram_init();
+void masks_init();
+
+//making request queue in mem controller
+Request* load_request(Request* request, MSHR* reg_ptr, int is_inst);
+void queue_request(Request* request);
+void remove_from_queue(Queue* queue, int index);
+
+//every cycle scheduling functions
+Request* schedule_request();
+
+//helpers
+int is_schedulable(Request* request);
+int find_schedulables(Request* ptr);
+int find_row_hits(Request* ptr, int schedulables);
+int find_earliest(Request* ptr, int row_hits);
+void set_channel_vals(Request* request);
+void shift_channel_vals();

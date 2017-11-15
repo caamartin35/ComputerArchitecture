@@ -1,0 +1,494 @@
+ncsim: 08.20-s015: (c) Copyright 1995-2009 Cadence Design Systems, Inc.
+ncsim> database -open -shm -default waveforms
+Created default SHM database waveforms
+ncsim> probe -shm -create -depth all -all 
+Created probe 1
+ncsim> run 
+                  50 DATA: 
+IF: pc=00400000 inst=2402000a 
+ID: ir=00000000 
+EX: rs=00000000, rt=00000000, i_e=00000000, i_se=00000000, shft_amnt=00000000, alu_out=00000000 
+MEM: mul=00000000, alu=00000000, rt=00000000 
+WB: a_mul=00000000, a_alu=00000000, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=8, src1_sel=2, src2_sel=0, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=00 
+EX: alu_sel=0, src1_sel=0, src2_sel=0, mul_en=0, mul_sel=0, memext=0, word_size=0, store_en=0, ctrl_we=0, rd_sel=0, rd_num=00 
+MEM: memext=0, word_size=0, store_en=0, ctrl_we=0, rd_sel=0, rd_num=00 
+WB: ctrl_we=0, rd_sel=0, rd_num=00, 
+stall=0, valids=11111111111111111111111111111111
+
+
+                 150 DATA: 
+IF: pc=00400000 inst=2402000a 
+ID: ir=00000000 
+EX: rs=00000000, rt=00000000, i_e=00000000, i_se=00000000, shft_amnt=00000000, alu_out=00000000 
+MEM: mul=00000000, alu=00000000, rt=00000000 
+WB: a_mul=00000000, a_alu=00000000, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=8, src1_sel=2, src2_sel=0, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=00 
+EX: alu_sel=0, src1_sel=0, src2_sel=0, mul_en=0, mul_sel=0, memext=0, word_size=0, store_en=0, ctrl_we=0, rd_sel=0, rd_num=00 
+MEM: memext=0, word_size=0, store_en=0, ctrl_we=0, rd_sel=0, rd_num=00 
+WB: ctrl_we=0, rd_sel=0, rd_num=00, 
+stall=0, valids=11111111111111111111111111111111
+
+
+time_set[rs_num]: 3
+time_set[rs_num]: 3
+                 250 DATA: 
+IF: pc=00400004 inst=24080005 
+ID: ir=2402000a 
+EX: rs=00000000, rt=00000000, i_e=00000000, i_se=00000000, shft_amnt=00000000, alu_out=00000000 
+MEM: mul=00000000, alu=00000000, rt=00000000 
+WB: a_mul=00000000, a_alu=00000000, a_proc=ffffffxx
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+EX: alu_sel=8, src1_sel=2, src2_sel=0, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=00 
+MEM: memext=0, word_size=0, store_en=0, ctrl_we=0, rd_sel=0, rd_num=00 
+WB: ctrl_we=0, rd_sel=0, rd_num=00, 
+stall=1, valids=11111111111111111111111111111010
+
+
+                 350 DATA: 
+IF: pc=00400004 inst=24080005 
+ID: ir=2402000a 
+EX: rs=00000000, rt=00000000, i_e=00000000, i_se=00000000, shft_amnt=00000000, alu_out=00000000 
+MEM: mul=xxxxxxxx, alu=00000000, rt=00000000 
+WB: a_mul=00000000, a_alu=00000000, a_proc=ffffffxx
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+EX: alu_sel=8, src1_sel=2, src2_sel=0, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=00 
+WB: ctrl_we=0, rd_sel=0, rd_num=00, 
+stall=1, valids=11111111111111111111111111111010
+
+
+                 450 DATA: 
+IF: pc=00400004 inst=24080005 
+ID: ir=2402000a 
+EX: rs=00000000, rt=00000000, i_e=00000000, i_se=00000000, shft_amnt=00000000, alu_out=00000000 
+MEM: mul=xxxxxxxx, alu=00000000, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000000, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+EX: alu_sel=8, src1_sel=2, src2_sel=0, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+WB: ctrl_we=1, rd_sel=0, rd_num=00, 
+stall=1, valids=11111111111111111111111111111010
+
+
+                 550 DATA: 
+IF: pc=00400004 inst=24080005 
+ID: ir=2402000a 
+EX: rs=00000000, rt=00000000, i_e=00000000, i_se=00000000, shft_amnt=00000000, alu_out=00000000 
+MEM: mul=xxxxxxxx, alu=00000000, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000000, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+EX: alu_sel=8, src1_sel=2, src2_sel=0, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+WB: ctrl_we=1, rd_sel=0, rd_num=02, 
+stall=0, valids=11111111111111111111111111111111
+
+
+time_set[rs_num]: 3
+time_set[rs_num]: 3
+                 650 DATA: 
+IF: pc=00400008 inst=2509012c 
+ID: ir=24080005 
+EX: rs=00000000, rt=00000000, i_e=0000000a, i_se=0000000a, shft_amnt=00000000, alu_out=0000000a 
+MEM: mul=xxxxxxxx, alu=00000000, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000000, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+WB: ctrl_we=1, rd_sel=0, rd_num=02, 
+stall=1, valids=11111111111111111111111011111010
+
+
+                 750 DATA: 
+IF: pc=00400008 inst=2509012c 
+ID: ir=24080005 
+EX: rs=00000000, rt=00000000, i_e=0000000a, i_se=0000000a, shft_amnt=00000000, alu_out=0000000a 
+MEM: mul=xxxxxxxx, alu=0000000a, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000000, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=02 
+WB: ctrl_we=1, rd_sel=0, rd_num=02, 
+stall=1, valids=11111111111111111111111011111010
+
+
+                 850 DATA: 
+IF: pc=00400008 inst=2509012c 
+ID: ir=24080005 
+EX: rs=00000000, rt=00000000, i_e=0000000a, i_se=0000000a, shft_amnt=00000000, alu_out=0000000a 
+MEM: mul=xxxxxxxx, alu=0000000a, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=0000000a, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+WB: ctrl_we=1, rd_sel=0, rd_num=02, 
+stall=1, valids=11111111111111111111111011111010
+
+
+                 950 DATA: 
+IF: pc=00400008 inst=2509012c 
+ID: ir=24080005 
+EX: rs=00000000, rt=00000000, i_e=0000000a, i_se=0000000a, shft_amnt=00000000, alu_out=0000000a 
+MEM: mul=xxxxxxxx, alu=0000000a, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=0000000a, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+WB: ctrl_we=1, rd_sel=0, rd_num=08, 
+stall=0, valids=11111111111111111111111111111111
+
+
+time_set[rs_num]: 3
+time_set[rs_num]: 3
+                1050 DATA: 
+IF: pc=0040000c inst=240a01f4 
+ID: ir=2509012c 
+EX: rs=00000000, rt=00000000, i_e=00000005, i_se=00000005, shft_amnt=00000000, alu_out=00000005 
+MEM: mul=xxxxxxxx, alu=0000000a, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=0000000a, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+WB: ctrl_we=1, rd_sel=0, rd_num=08, 
+stall=1, valids=11111111111111111111110011111111
+
+
+                1150 DATA: 
+IF: pc=0040000c inst=240a01f4 
+ID: ir=2509012c 
+EX: rs=00000000, rt=00000000, i_e=00000005, i_se=00000005, shft_amnt=00000000, alu_out=00000005 
+MEM: mul=xxxxxxxx, alu=00000005, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=0000000a, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=08 
+WB: ctrl_we=1, rd_sel=0, rd_num=08, 
+stall=1, valids=11111111111111111111110011111111
+
+
+                1250 DATA: 
+IF: pc=0040000c inst=240a01f4 
+ID: ir=2509012c 
+EX: rs=00000000, rt=00000000, i_e=00000005, i_se=00000005, shft_amnt=00000000, alu_out=00000005 
+MEM: mul=xxxxxxxx, alu=00000005, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000005, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+WB: ctrl_we=1, rd_sel=0, rd_num=08, 
+stall=1, valids=11111111111111111111110011111111
+
+
+                1350 DATA: 
+IF: pc=0040000c inst=240a01f4 
+ID: ir=2509012c 
+EX: rs=00000000, rt=00000000, i_e=00000005, i_se=00000005, shft_amnt=00000000, alu_out=00000005 
+MEM: mul=xxxxxxxx, alu=00000005, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000005, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+WB: ctrl_we=1, rd_sel=0, rd_num=09, 
+stall=0, valids=11111111111111111111111111111111
+
+
+time_set[rs_num]: 3
+time_set[rs_num]: 3
+                1450 DATA: 
+IF: pc=00400010 inst=254b0022 
+ID: ir=240a01f4 
+EX: rs=00000005, rt=00000000, i_e=0000012c, i_se=0000012c, shft_amnt=00000004, alu_out=00000131 
+MEM: mul=xxxxxxxx, alu=00000005, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000005, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+WB: ctrl_we=1, rd_sel=0, rd_num=09, 
+stall=1, valids=11111111111111111111100111111110
+
+
+                1550 DATA: 
+IF: pc=00400010 inst=254b0022 
+ID: ir=240a01f4 
+EX: rs=00000005, rt=00000000, i_e=0000012c, i_se=0000012c, shft_amnt=00000004, alu_out=00000131 
+MEM: mul=xxxxxxxx, alu=00000131, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000005, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=09 
+WB: ctrl_we=1, rd_sel=0, rd_num=09, 
+stall=1, valids=11111111111111111111100111111110
+
+
+                1650 DATA: 
+IF: pc=00400010 inst=254b0022 
+ID: ir=240a01f4 
+EX: rs=00000005, rt=00000000, i_e=0000012c, i_se=0000012c, shft_amnt=00000004, alu_out=00000131 
+MEM: mul=xxxxxxxx, alu=00000131, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000131, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+WB: ctrl_we=1, rd_sel=0, rd_num=09, 
+stall=1, valids=11111111111111111111100111111110
+
+
+                1750 DATA: 
+IF: pc=00400010 inst=254b0022 
+ID: ir=240a01f4 
+EX: rs=00000005, rt=00000000, i_e=0000012c, i_se=0000012c, shft_amnt=00000004, alu_out=00000131 
+MEM: mul=xxxxxxxx, alu=00000131, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000131, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+WB: ctrl_we=1, rd_sel=0, rd_num=0a, 
+stall=0, valids=11111111111111111111111111111111
+
+
+time_set[rs_num]: 3
+time_set[rs_num]: 3
+                1850 DATA: 
+IF: pc=00400014 inst=256b002d 
+ID: ir=254b0022 
+EX: rs=00000000, rt=00000000, i_e=000001f4, i_se=000001f4, shft_amnt=00000007, alu_out=000001f4 
+MEM: mul=xxxxxxxx, alu=00000131, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000131, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+WB: ctrl_we=1, rd_sel=0, rd_num=0a, 
+stall=1, valids=11111111111111111111001111111111
+
+
+                1950 DATA: 
+IF: pc=00400014 inst=256b002d 
+ID: ir=254b0022 
+EX: rs=00000000, rt=00000000, i_e=000001f4, i_se=000001f4, shft_amnt=00000007, alu_out=000001f4 
+MEM: mul=xxxxxxxx, alu=000001f4, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000131, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0a 
+WB: ctrl_we=1, rd_sel=0, rd_num=0a, 
+stall=1, valids=11111111111111111111001111111111
+
+
+                2050 DATA: 
+IF: pc=00400014 inst=256b002d 
+ID: ir=254b0022 
+EX: rs=00000000, rt=00000000, i_e=000001f4, i_se=000001f4, shft_amnt=00000007, alu_out=000001f4 
+MEM: mul=xxxxxxxx, alu=000001f4, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=000001f4, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+WB: ctrl_we=1, rd_sel=0, rd_num=0a, 
+stall=1, valids=11111111111111111111001111111111
+
+
+                2150 DATA: 
+IF: pc=00400014 inst=256b002d 
+ID: ir=254b0022 
+EX: rs=00000000, rt=00000000, i_e=000001f4, i_se=000001f4, shft_amnt=00000007, alu_out=000001f4 
+MEM: mul=xxxxxxxx, alu=000001f4, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=000001f4, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+WB: ctrl_we=1, rd_sel=0, rd_num=0b, 
+stall=0, valids=11111111111111111111111111111111
+
+
+time_set[rs_num]: 3
+                2250 DATA: 
+IF: pc=00400018 inst=0000000c 
+ID: ir=256b002d 
+EX: rs=000001f4, rt=00000000, i_e=00000022, i_se=00000022, shft_amnt=00000000, alu_out=00000216 
+MEM: mul=xxxxxxxx, alu=000001f4, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=000001f4, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+WB: ctrl_we=1, rd_sel=0, rd_num=0b, 
+stall=1, valids=11111111111111111111011111111111
+
+
+                2350 DATA: 
+IF: pc=00400018 inst=0000000c 
+ID: ir=256b002d 
+EX: rs=000001f4, rt=00000000, i_e=00000022, i_se=00000022, shft_amnt=00000000, alu_out=00000216 
+MEM: mul=xxxxxxxx, alu=00000216, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=000001f4, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+WB: ctrl_we=1, rd_sel=0, rd_num=0b, 
+stall=1, valids=11111111111111111111011111111111
+
+
+                2450 DATA: 
+IF: pc=00400018 inst=0000000c 
+ID: ir=256b002d 
+EX: rs=000001f4, rt=00000000, i_e=00000022, i_se=00000022, shft_amnt=00000000, alu_out=00000216 
+MEM: mul=xxxxxxxx, alu=00000216, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000216, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+WB: ctrl_we=1, rd_sel=0, rd_num=0b, 
+stall=1, valids=11111111111111111111011111111111
+
+
+                2550 DATA: 
+IF: pc=00400018 inst=0000000c 
+ID: ir=256b002d 
+EX: rs=000001f4, rt=00000000, i_e=00000022, i_se=00000022, shft_amnt=00000000, alu_out=00000216 
+MEM: mul=xxxxxxxx, alu=00000216, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000216, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+WB: ctrl_we=1, rd_sel=0, rd_num=0b, 
+stall=0, valids=11111111111111111111111111111111
+
+
+time_set[rs_num]: 3
+                2650 DATA: 
+IF: pc=0040001c inst=deadbeef 
+ID: ir=0000000c 
+EX: rs=00000216, rt=00000216, i_e=0000002d, i_se=0000002d, shft_amnt=00000000, alu_out=00000243 
+MEM: mul=xxxxxxxx, alu=00000216, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000216, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=x, src1_sel=x, src2_sel=x, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=x, rd_sel=x, rd_num=xx 
+EX: alu_sel=0, src1_sel=0, src2_sel=1, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+WB: ctrl_we=1, rd_sel=0, rd_num=0b, 
+stall=0, valids=11111111111111111111011111111110
+
+
+[Reserved instruction exception at 0x00400020]
+                2750 DATA: 
+IF: pc=00400020 inst=deadbeef 
+ID: ir=deadbeef 
+EX: rs=00000000, rt=00000000, i_e=0000000c, i_se=0000000c, shft_amnt=00000000, alu_out=xxxxxxxx 
+MEM: mul=xxxxxxxx, alu=00000243, rt=00000216 
+WB: a_mul=xxxxxxxx, a_alu=00000216, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=x, src1_sel=x, src2_sel=x, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=x, rd_sel=x, rd_num=xx 
+EX: alu_sel=x, src1_sel=x, src2_sel=x, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=x, rd_sel=x, rd_num=xx 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=1, rd_sel=0, rd_num=0b 
+WB: ctrl_we=1, rd_sel=0, rd_num=0b, 
+stall=0, valids=11111111111111111111011111111110
+
+
+[End of program at 0x00400024]
+[Reserved instruction exception at 0x00400024]
+                2850 DATA: 
+IF: pc=00400024 inst=deadbeef 
+ID: ir=deadbeef 
+EX: rs=00000000, rt=00000000, i_e=0000beef, i_se=ffffbeef, shft_amnt=0000001b, alu_out=xxxxxxxx 
+MEM: mul=xxxxxxxx, alu=xxxxxxxx, rt=00000000 
+WB: a_mul=xxxxxxxx, a_alu=00000243, a_proc=00000000
+
+ CTRL: 
+ID: alu_sel=x, src1_sel=x, src2_sel=x, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=x, rd_sel=x, rd_num=xx 
+EX: alu_sel=x, src1_sel=x, src2_sel=x, mul_en=0, mul_sel=x, memext=x, word_size=x, store_en=0, ctrl_we=x, rd_sel=x, rd_num=xx 
+MEM: memext=x, word_size=x, store_en=0, ctrl_we=x, rd_sel=x, rd_num=xx 
+WB: ctrl_we=1, rd_sel=0, rd_num=0b, 
+stall=0, valids=11111111111111111111011111111110
+
+
+--- 18-447 Register file dump ---
+=== Simulation Cycle                 2850 ===
+R          0	= 0x00000000	( 0 )
+R          1	= 0x00000000	( 0 )
+R          2	= 0x0000000a	( 10 )
+R          3	= 0x00000000	( 0 )
+R          4	= 0x00000000	( 0 )
+R          5	= 0x00000000	( 0 )
+R          6	= 0x00000000	( 0 )
+R          7	= 0x00000000	( 0 )
+R          8	= 0x00000005	( 5 )
+R          9	= 0x00000131	( 305 )
+R         10	= 0x000001f4	( 500 )
+R         11	= 0x00000243	( 579 )
+R         12	= 0x00000000	( 0 )
+R         13	= 0x00000000	( 0 )
+R         14	= 0x00000000	( 0 )
+R         15	= 0x00000000	( 0 )
+R         16	= 0x00000000	( 0 )
+R         17	= 0x00000000	( 0 )
+R         18	= 0x00000000	( 0 )
+R         19	= 0x00000000	( 0 )
+R         20	= 0x00000000	( 0 )
+R         21	= 0x00000000	( 0 )
+R         22	= 0x00000000	( 0 )
+R         23	= 0x00000000	( 0 )
+R         24	= 0x00000000	( 0 )
+R         25	= 0x00000000	( 0 )
+R         26	= 0x00000000	( 0 )
+R         27	= 0x00000000	( 0 )
+R         28	= 0x00000000	( 0 )
+R         29	= 0x00000000	( 0 )
+R         30	= 0x00000000	( 0 )
+R         31	= 0x00000000	( 0 )
+--- End register file dump ---
+Simulation complete via $finish(1) at time 2850 NS + 4
+./src/testbench.v:85 	  $finish;
+ncsim> exit 

@@ -1,0 +1,69 @@
+ncvlog: 08.20-s015: (c) Copyright 1995-2009 Cadence Design Systems, Inc.
+TOOL:	ncvlog	08.20-s015: Started on Mar 07, 2013 at 15:50:04 EST
+ncvlog
+    -linedebug
+    -messages
+    -incdir src
+    src/exception_unit.v
+    src/mips_core.v
+    src/mips_decode.v
+    src/mips_mem.v
+    src/multiply_coprocessor.v
+    src/regfile.v
+    src/syscall_unit.v
+    src/testbench.v
+
+file: src/exception_unit.v
+	module worklib.exception_unit
+		errors: 0, warnings: 0
+file: src/mips_core.v
+	module worklib.mips_core
+		errors: 0, warnings: 0
+	module worklib.timerr
+		errors: 0, warnings: 0
+	module worklib.mem_write_controller
+		errors: 0, warnings: 0
+	module worklib.memory_processor
+		errors: 0, warnings: 0
+	module worklib.stall_logic
+		errors: 0, warnings: 0
+	 $display("time_set[rs_num]: %d", time_set[rs_num]);
+	                                         |
+ncvlog: *W,MRSTAR (src/mips_core.v,496|42): array reference in @* implies sensitivity to all elements.
+	module worklib.valid_logic
+		errors: 0, warnings: 1
+	module worklib.mux
+		errors: 0, warnings: 0
+	module worklib.mips_ALU
+		errors: 0, warnings: 0
+	module worklib.register
+		errors: 0, warnings: 0
+	module worklib.ctrl_ex_register
+		errors: 0, warnings: 0
+	module worklib.ctrl_mem_register
+		errors: 0, warnings: 0
+	module worklib.ctrl_wb_register
+		errors: 0, warnings: 0
+	module worklib.add_const
+		errors: 0, warnings: 0
+file: src/mips_decode.v
+	module worklib.mips_decode
+		errors: 0, warnings: 0
+file: src/mips_mem.v
+	module worklib.mips_mem
+		errors: 0, warnings: 0
+file: src/multiply_coprocessor.v
+	module worklib.multiply_coprocessor
+		errors: 0, warnings: 0
+file: src/regfile.v
+	module worklib.regfile
+		errors: 0, warnings: 0
+file: src/syscall_unit.v
+	module worklib.syscall_unit
+		errors: 0, warnings: 0
+file: src/testbench.v
+	module worklib.testbench
+		errors: 0, warnings: 0
+	module worklib.clock
+		errors: 0, warnings: 0
+TOOL:	ncvlog	08.20-s015: Exiting on Mar 07, 2013 at 15:50:05 EST  (total: 00:00:01)

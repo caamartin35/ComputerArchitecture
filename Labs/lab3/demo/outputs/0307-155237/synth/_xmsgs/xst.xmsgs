@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IMPORTANT: This is an internal file that has been generated
+     by the Xilinx ISE software.  Any direct editing or
+     changes made to this file may result in unpredictable
+     behavior or data corruption.  It is strongly advised that
+     users do not edit the contents of this file. -->
+<messages>
+<msg type="warning" file="Xst" num="2321" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">1</arg> (<arg fmt="%s" index="4">$time</arg>) is not supported in call of system task <arg fmt="%s" index="5">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2326" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Invalid escape sequence : %<arg fmt="%c" index="3">x</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">3</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">4</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">5</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">6</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">7</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">8</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">9</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">10</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">11</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">12</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">13</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">14</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">15</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">16</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">17</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">18</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">19</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">20</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">21</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">22</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">23</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">24</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">25</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">26</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">27</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">28</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">29</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">30</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">31</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">32</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">33</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">34</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">35</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">36</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">37</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">38</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">39</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">40</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">41</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">42</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">43</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">44</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">45</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">46</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">47</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="warning" file="Xst" num="2323" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">249</arg>: Parameter <arg fmt="%d" index="3">48</arg> is not constant in call of system task <arg fmt="%s" index="4">$display</arg>.
+</msg>
+
+<msg type="error" file="Xst" num="902" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">492</arg>: Unexpected <arg fmt="%s" index="3">time_set</arg> event in always block sensitivity list.
+</msg>
+
+<msg type="error" file="Xst" num="902" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">505</arg>: Unexpected <arg fmt="%s" index="3">time_set</arg> event in always block sensitivity list.
+</msg>
+
+<msg type="error" file="Xst" num="2634" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">530</arg>: For loop stop condition should depend on loop variable or be static.
+</msg>
+
+<msg type="error" file="Xst" num="2634" delta="new" >&quot;<arg fmt="%s" index="1">src/mips_core.v</arg>&quot; line <arg fmt="%d" index="2">536</arg>: For loop stop condition should depend on loop variable or be static.
+</msg>
+
+</messages>
+

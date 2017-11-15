@@ -1,0 +1,55 @@
+#include <stdint.h>
+#include "objects.h"
+
+#ifndef l2_H_
+#define l2_H_
+
+
+//initialize the l2 cache
+void init_l2();
+
+//REMOVAL
+void l2_remove_data_hit();
+void l2_remove_inst_hit(uint32_t new_pc);
+
+//HANDLERS
+uint32_t l2_inst_hit_handler(uint32_t pc);
+int l2_data_hit_handler(uint32_t mem_addr);
+void l2_miss_handler();
+
+//SCHEDULERS
+void l2_inst_hit_scheduler(uint32_t pc);
+void l2_data_hit_scheduler(uint32_t mem_addr);
+void l2_miss_scheduler(uint32_t pc_mem_addr, int is_inst);
+
+//HELPERS
+void send_request_to_dram(int i);
+void set_on_recover();
+int l2_inst_insertion(struct MSHR miss);
+int l2_data_insertion(struct MSHR miss);
+//void l2_data_ready_process(struct MSHR* miss);                   
+void l1_inst_insertion(struct MSHR miss);
+int l1_data_insertion(struct MSHR miss);
+void read_block_from_mem(uint32_t address, uint32_t* ptr);
+void write_block_to_mem(struct block* block);
+void l2_writeback(struct block* block);
+//update cycles
+void l2_update_cycles();
+
+//check l2 cache
+struct block* l2_check(uint32_t pc_mem_addr, int is_inst);
+
+//load l2 cache
+void l2_load(uint32_t pc_mem_addr);
+struct block* l2_probe(uint32_t addr);
+
+typedef struct L2 {
+  struct MSHR misses[16];
+  struct HITREG inst_hit;
+  struct HITREG data_hit;
+  int num_misses;
+  struct block cache[512][16];
+  struct MSHR* data_ready;
+} L2;
+
+#endif

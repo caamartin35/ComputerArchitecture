@@ -1,0 +1,308 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+#include <math.h>
+#include <limits.h>
+#include <string.h>
+#include "l2.h"
+#include "cache.h"
+#include "pipe.h"
+#include "mem_ctrl.h"
+
+struct MSHR misses[16];
+struct HITREG inst_hit;
+struct HITREG data_hit;
+int num_misses;
+struct block l2_cache[512][16];
+
+void l2_init(){
+  int i;
+  int j;
+
+  for (i=0; i<512; i++){
+    for (j=0; j<16; j++){
+      l2_cache[i][j].v = 0;
+      l2_cache[i][j].tag = 0;
+      l2_cache[i][j].timestamp = 0;
+      misses[j].v = 0;
+      misses[j].pc_mem_addr = 0;
+      misses[j].done = 0;
+      misses[j].zero = 0;
+    }
+  }
+  num_misses = 0;
+  data_hit.hit_cycles = 0;
+  data_hit.v = 0;
+  data_hit.zero = 0;
+  data_hit.pc_mem_addr = 0;
+  inst_hit.hit_cycles = 0;
+  inst_hit.v = 0;
+  inst_hit.pc_mem_addr = 0;
+  inst_hit.zero = 0;
+}
+
+//checks if the cache will have a hit or miss, returns 1 on fill notification for L1, 2, for not probeable, 0 otherwise
+int l2_check(uint32_t pc_mem_addr, int is_inst){
+  int col;
+  int setIndex;
+  int tag;
+  
+  //cant probe l2 cache
+  if (num_misses == 16) return 2;
+
+  setIndex = (pc_mem_addr >> 5) & 0x01ff;
+  tag = (pc_mem_addr >> 14);
+
+
+  //iterate through the blocks.                                                                                                                                      
+  for (col=0; col<16; col++){
+    //check each block to see if it is a hit.                                                                                                             
+    if ((l2_cache[setIndex][col]).tag == tag){
+      if ((l2_cache[setIndex][col]).v == 1){
+      	(l2_cache[setIndex][col]).timestamp = pipe.time;
+      	if (is_inst){
+      	  printf("L2: TAG: %x\n", (l2_cache[setIndex][col]).tag);
+      	  printf("L2: L2 CACHE HIT: %x\n", pc_mem_addr);
+      	  l2_inst_hit_scheduler(pc_mem_addr);
+          return 1;
+      	}
+      	else {
+      	  printf("L2: TAG: %x\n", (l2_cache[setIndex][col]).tag);
+          printf("L2: L2 CACHE HIT: %x\n", pc_mem_addr);
+          l2_data_hit_scheduler(pc_mem_addr);
+          return 1;
+      	}
+      }
+    }
+  }
+
+  printf("L2: TAG: %x\n", tag);
+  
+  //if it is an l2 miss
+  l2_miss_scheduler(pc_mem_addr);
+  return 0;
+}
+
+//loads the instruction from the cache. returns 1 if it was a cache hit, 0 otherwise                                                                 
+void l2_load(uint32_t pc_mem_addr){
+
+  int col;
+  int setIndex;
+  int tag;
+  struct block *LRU;
+
+
+  setIndex = (pc_mem_addr >> 5) & 0x01ff;
+  tag = (pc_mem_addr >> 14);
+
+  //iterate through the blocks.                                                                      
+  for (col=0; col<16; col++){
+    //set our LRU block to first block in set.                                                                                                                                                                                              
+    if (col == 0){
+      LRU = l2_cache[setIndex];
+    }
+    //check each block to see if it is a hit.                                                                                                                                                                                                
+    if ((l2_cache[setIndex][col]).tag == tag){
+      if ((l2_cache[setIndex][col]).v == 1){
+        (l2_cache[setIndex][col]).timestamp = pipe.time;
+        return;
+      }
+    }
+    //reset LRU if timestamp is less(older) on current block                                                                                                                                                                                 
+    if ((*LRU).timestamp > (l2_cache[setIndex][col]).timestamp){
+      LRU = l2_cache[setIndex]+col;
+    }
+  }
+  if (LRU->v == 1) printf("INSTRUCTION EVICTION!!!!!");
+  //resetting the least recently used block                                                                                                                                                                                                  
+  LRU->v = 1;
+  LRU->tag = tag;
+  LRU->timestamp = pipe.time;
+  //printf("Loaded Block: tag: %x, pipe.time: %d, at: Col:
+}
+
+////////////
+//HANDLERS//
+////////////
+
+//returns pc to load inst l1, 0 otherwise
+uint32_t l2_inst_hit_handler(uint32_t pc){
+  if (inst_hit.zero == 1){
+    inst_hit.hit_cycles = 0;
+    inst_hit.zero = 0;
+    inst_hit.v = 0;
+    if ((inst_hit.pc_mem_addr >> 5) == (pc >> 5)){
+      inst_hit.pc_mem_addr = 0;
+      return 1;
+    }
+    else{
+      inst_hit.pc_mem_addr = 0;
+    }
+  }
+  return 0;
+}
+
+//returns 1 to load data l1, 0 otherwise
+int l2_data_hit_handler(uint32_t mem_addr){
+  if (data_hit.zero == 1){
+    data_hit.hit_cycles = 0;
+    data_hit.zero = 0;
+    if (data_hit.pc_mem_addr == mem_addr){
+      data_hit.pc_mem_addr = 0;
+      return 1;
+    }
+    else {
+      data_hit.pc_mem_addr = 0;
+      return 0;
+    }
+  }
+  else
+    return 0;
+}
+
+//returns pc_mem_addr on fill notification, 0 otherwise
+uint32_t l2_miss_handler(){
+  uint32_t ret_val = 0;
+
+  for (int i=0; i<16; i++){
+    
+    //this just became 0
+    if (misses[i].zero == 1){
+      if (misses[i].done == 0){
+        send_request_to_dram(i);
+        misses[i].zero = 0;
+      }
+      else{
+        l2_load(misses[i].pc_mem_addr);
+        ret_val = misses[i].pc_mem_addr;
+        printf("L2: misshandler retval=%x\n", ret_val);
+        misses[i].v = 0;
+        misses[i].pc_mem_addr = 0;
+        misses[i].done = 0;
+        misses[i].zero = 0;
+        num_misses--;
+      }
+    }
+
+    //dram finished serving request
+    else if (misses[i].miss_cycles == 0 && misses[i].v == 1){
+      if (misses[i].done == 1){
+        misses[i].miss_cycles = 5;
+      }
+    }
+  }
+  return ret_val;
+}
+////////////////
+//END HANDLERS//
+////////////////
+
+//////////////
+//SCHEDULERS//
+//////////////
+
+//schedules an l2 inst hit
+void l2_inst_hit_scheduler(uint32_t pc){
+  if (inst_hit.pc_mem_addr == 0){
+    inst_hit.pc_mem_addr = pc;
+    inst_hit.hit_cycles = 15;
+    inst_hit.zero = 0;
+    inst_hit.v = 1;
+  }
+}
+
+//schedules an l2 data hit
+void l2_data_hit_scheduler(uint32_t mem_addr){
+  data_hit.pc_mem_addr = mem_addr;
+  data_hit.hit_cycles = 15;
+  data_hit.zero = 0;
+  data_hit.v = 1;
+}
+
+//loads the miss into an MSHR
+void l2_miss_scheduler(uint32_t pc_mem_addr){
+  Request* request;
+  int is_loaded = 0;
+  uint32_t scheduled_tag;
+  uint32_t new_tag = (pc_mem_addr >> 5);
+
+  //check to see if this miss is loaded into an MSHR
+  for (int i=0; i<16; i++){
+    scheduled_tag = (misses[i].pc_mem_addr >> 5);
+    if (scheduled_tag == new_tag && misses[i].v == 1){
+      is_loaded = 1;
+      break;
+    }
+  }
+  
+  //if its not loaded, load it
+  if (!is_loaded){
+    for (int i=0; i<16; i++){
+      if (misses[i].v == 0){
+        printf("L2: loading MSHR: %d with %x\n", i, pc_mem_addr);
+        num_misses++;
+        misses[i].v = 1;
+        misses[i].pc_mem_addr = pc_mem_addr;
+        misses[i].done = 0;
+        misses[i].miss_cycles = 5;
+        misses[i].zero = 0;
+        break;
+      }
+    }
+  }
+}
+//////////////////
+//END SCHEDULERS//
+//////////////////
+
+///////////
+//HELPERS//
+///////////
+
+//sends the request to dram
+void send_request_to_dram(int i){
+  Request* request;
+  printf("L2: Telling memctrl to queue request with curMSHRinst=%d\n", i);
+  request = malloc(sizeof(Request));
+  queue_request( load_request(request, &(misses[i]),1) );
+  printf("befoooo: Bank: %d\n", q->queue[0]->bank);
+  free(request);
+  printf("afteraaaa: bank: %d\n", q->queue[0]->bank);
+}
+
+//update all l2 cycles
+void l2_update_cycles(){
+  
+  printf("L2: just 0=%d\n", inst_hit.hit_cycles);
+
+
+  //update inst hit cycles
+
+  if (inst_hit.hit_cycles > 0){
+    inst_hit.hit_cycles--;
+    if (inst_hit.hit_cycles == 0)
+      inst_hit.zero = 1;
+  }
+
+  //update data hit cycles
+  if (data_hit.hit_cycles > 0){
+    data_hit.hit_cycles--;
+    if (data_hit.hit_cycles == 0)
+      data_hit.zero = 1;
+  }
+
+  //update all miss cycles
+  for (int i=0; i<16; i++){
+    if (misses[i].miss_cycles > 0){
+      printf("L2: right before seeting zero to 1, i=%d, misses[i].miss_cycles=%d\n", i, misses[i].miss_cycles);
+      misses[i].miss_cycles--;
+      if (misses[i].miss_cycles == 0){
+        printf("L2: SETTING THE ZERO TO 1\n");
+        misses[i].zero = 1;
+      }
+    }
+  }
+}
+///////////////
+//END HELPERS//
+///////////////

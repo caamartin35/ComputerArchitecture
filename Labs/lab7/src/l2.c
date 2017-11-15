@@ -1,0 +1,614 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+#include <math.h>
+#include <limits.h>
+#include <string.h>
+#include "l2.h"
+#include "cache.h"
+#include "core.h"
+#include "pipe.h"
+#include "mem_ctrl.h"
+#include "processor.h"
+
+void init_l2(){
+  int i;
+  int j;
+
+  for (i=0; i<512; i++){
+    for (j=0; j<16; j++){
+      processor.l2.cache[i][j].v = 0;
+      processor.l2.cache[i][j].tag = 0;
+      processor.l2.cache[i][j].timestamp = 0;
+      for (int k=0; k<8; k++){
+        processor.l2.cache[i][j].data[k] = 0;
+      }
+      processor.l2.misses[j].v = 0;
+      processor.l2.misses[j].pc_mem_addr = 0;
+      processor.l2.misses[j].done = 0;
+      processor.l2.misses[j].zero = 0;
+      processor.l2.misses[j].is_inst = 0;
+      processor.l2.misses[j].is_write = 0;
+    }
+  }
+  processor.l2.num_misses = 0;
+  processor.l2.data_hit.hit_cycles = 0;
+  processor.l2.data_hit.v = 0;
+  processor.l2.data_hit.zero = 0;
+  processor.l2.data_hit.pc_mem_addr = 0;
+  processor.l2.inst_hit.hit_cycles = 0;
+  processor.l2.inst_hit.v = 0;
+  processor.l2.inst_hit.pc_mem_addr = 0;
+  processor.l2.inst_hit.zero = 0;
+}
+
+//checks if the cache will have a hit or miss, returns 1 on fill notification for L1, 2, for not probeable, 0 otherwise
+struct block* l2_check(uint32_t pc_mem_addr, int is_inst){
+  int col;
+  int setIndex;
+  int tag;
+  
+  //cant probe l2 cache
+  if (processor.l2.num_misses == 16) return NULL;
+
+  setIndex = (pc_mem_addr >> 5) & 0x01ff;
+  tag = (pc_mem_addr >> 14);
+
+
+  //iterate through the blocks.                                                                                                                                      
+  for (col=0; col<16; col++){
+    //check each block to see if it is a hit.                                                                                                             
+    if ((processor.l2.cache[setIndex][col]).tag == tag){
+      if ((processor.l2.cache[setIndex][col]).v == 1){
+      	(processor.l2.cache[setIndex][col]).timestamp = processor.time;
+      	if (is_inst){
+      	  printf("L2: TAG: %x\n", (processor.l2.cache[setIndex][col]).tag);
+      	  printf("L2: L2 CACHE HIT: %x\n", pc_mem_addr);
+      	  l2_inst_hit_scheduler(pc_mem_addr);
+          return &(processor.l2.cache[setIndex][col]);
+      	}
+      	else {
+      	  printf("L2: TAG: %x\n", (processor.l2.cache[setIndex][col]).tag);
+          printf("L2: L2 CACHE HIT: %x\n", pc_mem_addr);
+          l2_data_hit_scheduler(pc_mem_addr);
+          return &(processor.l2.cache[setIndex][col]);
+      	}
+      }
+    }
+  }
+  printf("L2: TAG: %x\n", tag);
+  //if it is an l2 miss
+  l2_miss_scheduler(pc_mem_addr, is_inst);
+  return NULL;
+}
+
+
+//checks if the cache will have a hit or miss, returns 1 on fill notification for L1, 2, for not probeable, 0 otherwise
+struct block* l2_probe(uint32_t addr){
+  int col;
+  struct block* hit;
+  uint32_t tag, setIndex;
+
+  setIndex = (addr >> 5) & 0x01ff;
+  tag = (addr >> 14);
+  //iterate through the blocks.                                                                                                                                      
+  for (col=0; col<16; col++){
+    //check each block to see if it is a hit.                                                                                                             
+    if ((processor.l2.cache[setIndex][col]).tag == tag){
+      if ((processor.l2.cache[setIndex][col]).v == 1){
+        (processor.l2.cache[setIndex][col]).timestamp = processor.time;
+        return &(processor.l2.cache[setIndex][col]);
+      }
+    }
+  }
+
+  return NULL;
+}
+
+//loads the instruction from the cache. returns 1 if it was a cache hit, 0 otherwise                                                                 
+void l2_load(uint32_t pc_mem_addr){
+
+  int col;
+  int setIndex;
+  int tag;
+  struct block *LRU;
+  struct block *hit;
+
+  setIndex = (pc_mem_addr >> 5) & 0x01ff;
+  tag = (pc_mem_addr >> 14);
+
+  //iterate through the blocks.                                                                      
+  for (col=0; col<16; col++){
+    //set our LRU block to first block in set.                                                                                                                                                                                              
+    if (col == 0){
+      LRU = processor.l2.cache[setIndex];
+    }
+
+    if ((processor.l2.cache[setIndex][col]).tag == tag){
+      if ((processor.l2.cache[setIndex][col]).v == 1){
+        (processor.l2.cache[setIndex][col]).timestamp = processor.time;
+        hit = &(processor.l2.cache[setIndex][col]);
+      }
+    }
+
+    //reset LRU if timestamp is less(older) on current block                                                                                                                                                                                 
+    if ((*LRU).timestamp > (processor.l2.cache[setIndex][col]).timestamp){
+      LRU = processor.l2.cache[setIndex]+col;
+    }
+  }
+  printf("IMA TOLD YOU: mc: %d\n", processor.l2.misses[0].miss_cycles);
+  if (hit != NULL){
+    hit->dirty = 1;
+    hit->timestamp = processor.time;
+    read_block_from_mem(pc_mem_addr, core->transfer);
+    printf("IMA TOLD YOUfmf: mc: %d\n", processor.l2.misses[0].miss_cycles);
+    for (int i=0; i<8; i++)
+      hit->data[i] = core->transfer[i];
+    printf("IMA TOLD YOU:-hit mc: %d\n", processor.l2.misses[0].miss_cycles);
+
+  }
+
+  else{
+    if (LRU->v == 1) {
+      if (LRU->dirty){
+	write_block_to_mem(LRU);
+      }
+    }
+    printf("IMA TOLD YOU2: mc: %d\n", processor.l2.misses[0].miss_cycles);
+
+    //resetting the least recently used block   
+    LRU->pc_mem_addr = pc_mem_addr;                                                                                                                                                                                               
+    LRU->v = 1;
+    LRU->tag = tag;
+    LRU->timestamp = processor.time;
+    read_block_from_mem(pc_mem_addr, core->transfer);
+    printf("IMA TOLD YOU 3: mc: %d\n", processor.l2.misses[0].miss_cycles);
+
+    for (int i=0; i<8; i++)
+      LRU->data[i] = core->transfer[i];
+  }
+  //printf("Loaded Block: tag: %x, core->pipe.time: %d, at: Col:
+}
+
+////////////
+//HANDLERS//
+////////////
+
+//returns pc to load inst l1, 0 otherwise
+uint32_t l2_inst_hit_handler(uint32_t pc){
+  if (processor.l2.inst_hit.zero == 1){
+    processor.l2.inst_hit.hit_cycles = 0;
+    processor.l2.inst_hit.zero = 0;
+    processor.l2.inst_hit.v = 0;
+    if ((processor.l2.inst_hit.pc_mem_addr >> 5) == (pc >> 5)){
+      processor.l2.inst_hit.pc_mem_addr = 0;
+      return 1;
+    }
+    else{
+      processor.l2.inst_hit.pc_mem_addr = 0;
+    }
+  }
+  return 0;
+}
+
+//returns 1 to load data l1, 0 otherwise
+int l2_data_hit_handler(uint32_t mem_addr){
+  if (processor.l2.data_hit.zero == 1){
+    processor.l2.data_hit.hit_cycles = 0;
+    processor.l2.data_hit.zero = 0;
+    if (processor.l2.data_hit.pc_mem_addr == mem_addr){
+      processor.l2.data_hit.pc_mem_addr = 0;
+      return 1;
+    }
+    else {
+      processor.l2.data_hit.pc_mem_addr = 0;
+      return 0;
+    }
+  }
+  else
+    return 0;
+}
+
+
+void l2_miss_handler(){
+  int current_core;
+  for (int i=0; i<16; i++){
+    
+    //this just became 0
+    if (processor.l2.misses[i].zero == 1){
+      if (processor.l2.misses[i].done == 0){
+        send_request_to_dram(i);
+        processor.l2.misses[i].zero = 0;
+      }
+      else{
+        current_core = core->core_num;
+        set_active_core(processor.l2.misses[i].requester);
+        if (processor.l2.misses[i].is_inst)
+          core->l1_inst_cache.miss.miss_cycles = 5;
+        else 
+          core->l1_data_cache.miss.miss_cycles = 5;
+	printf("JUST SET THAT STUPID SHIT TO 5\n");
+        set_active_core(current_core);
+	//free MSHR                                                                                                                                         
+	processor.l2.misses[i].v = 0;
+	processor.l2.misses[i].pc_mem_addr = 0;
+	processor.l2.misses[i].done = 0;
+	processor.l2.misses[i].zero = 0;
+	processor.l2.misses[i].is_inst = 0;
+	processor.l2.misses[i].is_write = 0;
+	processor.l2.misses[i].requester = 0;
+	processor.l2.num_misses--;
+
+      }
+    }
+
+    //dram finished serving request
+    else if (processor.l2.misses[i].miss_cycles == 0 && processor.l2.misses[i].v == 1){
+      if (processor.l2.misses[i].done == 1){
+	printf("WHY???\n");
+        processor.l2.misses[i].miss_cycles = 5;
+	printf("Beffore: i=%d, miss_cycles=%d\n", 1, processor.l2.misses[1].miss_cycles);
+        l2_data_ready_process(&(processor.l2.misses[i]));
+	printf("After: i=%d, miss_cycles=%d\n", 1, processor.l2.misses[1].miss_cycles);
+
+      }
+    }
+  }
+}
+////////////////
+//END HANDLERS//
+////////////////
+
+//////////////
+//SCHEDULERS//
+//////////////
+
+//schedules an l2 inst hit
+void l2_inst_hit_scheduler(uint32_t pc){
+  if (processor.l2.inst_hit.pc_mem_addr == 0){
+    processor.l2.inst_hit.pc_mem_addr = pc;
+    processor.l2.inst_hit.hit_cycles = 15;
+    processor.l2.inst_hit.zero = 0;
+    processor.l2.inst_hit.v = 1;
+  }
+}
+
+//schedules an l2 data hit
+void l2_data_hit_scheduler(uint32_t mem_addr){
+  processor.l2.data_hit.pc_mem_addr = mem_addr;
+  processor.l2.data_hit.hit_cycles = 15;
+  processor.l2.data_hit.zero = 0;
+  processor.l2.data_hit.v = 1;
+}
+
+//loads the miss into an MSHR
+void l2_miss_scheduler(uint32_t pc_mem_addr, int is_inst){
+  Request* request;
+  int is_loaded = 0;
+  uint32_t scheduled_tag;
+  uint32_t new_tag = (pc_mem_addr >> 5);
+
+  //check to see if this miss is loaded into an MSHR
+  for (int i=0; i<16; i++){
+    scheduled_tag = (processor.l2.misses[i].pc_mem_addr >> 5);
+    if (scheduled_tag == new_tag && processor.l2.misses[i].v == 1){
+      is_loaded = 1;
+      break;
+    }
+  }
+  
+  //if its not loaded, load it
+  if (!is_loaded){
+    for (int i=0; i<16; i++){
+      if (processor.l2.misses[i].v == 0){
+        printf("L2: loading MSHR: %d with %x\n", i, pc_mem_addr);
+        processor.l2.num_misses++;
+        processor.l2.misses[i].v = 1;
+        processor.l2.misses[i].pc_mem_addr = pc_mem_addr;
+        processor.l2.misses[i].done = 0;
+        processor.l2.misses[i].miss_cycles = 5;
+        processor.l2.misses[i].zero = 0;
+        processor.l2.misses[i].is_inst = is_inst;
+        processor.l2.misses[i].requester = core->core_num;
+        if (!is_inst)
+          processor.l2.misses[i].is_write = core->pipe.mem_op->mem_write;
+        else
+          processor.l2.misses[i].is_write = 0;
+        break;
+      }
+    }
+  }
+}
+//////////////////
+//END SCHEDULERS//
+//////////////////
+
+///////////
+//HELPERS//
+///////////
+
+void l2_writeback(struct block* block){
+  struct block* new;
+  if ((new = l2_probe(block->pc_mem_addr)) != NULL){
+    new->dirty = 1;
+  }
+}
+//reset on branch recover
+void set_on_recover(){
+  if (processor.l2.inst_hit.hit_cycles < 13){
+    processor.l2.inst_hit.hit_cycles = 13;
+  }
+}
+    
+//sends the request to dram
+void send_request_to_dram(int i){
+  Request* request;
+  printf("L2: Telling memctrl to queue request with curMSHRinst=%d\n", i);
+  request = malloc(sizeof(Request));
+  queue_request( load_request(request, &(processor.l2.misses[i]),1) );
+  printf("befoooo: Bank: %d\n", processor.mem_ctrl.q->queue[0]->bank);
+  free(request);
+  printf("afteraaaa: bank: %d\n", processor.mem_ctrl.q->queue[0]->bank);
+}
+
+//update all l2 cycles
+void l2_update_cycles(){
+  
+  printf("L2: just 0=%d\n", processor.l2.inst_hit.hit_cycles);
+
+  
+  //update inst miss cycles
+  if (processor.core0.l1_inst_cache.miss.miss_cycles > 0){
+    processor.core0.l1_inst_cache.miss.miss_cycles--;
+    if (processor.core0.l1_inst_cache.miss.miss_cycles == 0)
+      processor.core0.l1_inst_cache.miss.zero = 1;
+  }
+  if (processor.core1.l1_inst_cache.miss.miss_cycles > 0){
+    processor.core1.l1_inst_cache.miss.miss_cycles--;
+    if (processor.core1.l1_inst_cache.miss.miss_cycles == 0)
+      processor.core1.l1_inst_cache.miss.zero =1;
+  }
+  if (processor.core2.l1_inst_cache.miss.miss_cycles > 0){
+    processor.core2.l1_inst_cache.miss.miss_cycles--;
+    if (processor.core2.l1_inst_cache.miss.miss_cycles == 0)
+      processor.core2.l1_inst_cache.miss.zero =1;
+  }
+  if (processor.core3.l1_inst_cache.miss.miss_cycles > 0){
+    processor.core3.l1_inst_cache.miss.miss_cycles--;
+    if (processor.core3.l1_inst_cache.miss.miss_cycles == 0)
+      processor.core3.l1_inst_cache.miss.zero =1;
+  }
+
+  //update data miss cycles
+  if (processor.core0.l1_data_cache.miss.miss_cycles > 0){
+    processor.core0.l1_data_cache.miss.miss_cycles--;
+    if (processor.core0.l1_data_cache.miss.miss_cycles == 0)
+      processor.core0.l1_data_cache.miss.zero =1;
+  }
+  if (processor.core1.l1_data_cache.miss.miss_cycles > 0){
+    processor.core1.l1_data_cache.miss.miss_cycles--;
+    if (processor.core1.l1_data_cache.miss.miss_cycles == 0)
+      processor.core1.l1_data_cache.miss.zero =1;
+  }
+  if (processor.core2.l1_data_cache.miss.miss_cycles > 0){
+    processor.core2.l1_data_cache.miss.miss_cycles--;
+    if (processor.core2.l1_data_cache.miss.miss_cycles == 0)
+      processor.core2.l1_data_cache.miss.zero =1;
+  }
+  if (processor.core3.l1_data_cache.miss.miss_cycles > 0){
+    processor.core3.l1_data_cache.miss.miss_cycles--;
+    if (processor.core3.l1_data_cache.miss.miss_cycles == 0)
+      processor.core3.l1_data_cache.miss.zero =1;
+  }
+
+
+  //update inst hit cycles
+
+  if (processor.l2.inst_hit.hit_cycles > 0){
+    processor.l2.inst_hit.hit_cycles--;
+    if (processor.l2.inst_hit.hit_cycles == 0)
+      processor.l2.inst_hit.zero = 1;
+  }
+
+  //update data hit cycles
+  if (processor.l2.data_hit.hit_cycles > 0){
+    processor.l2.data_hit.hit_cycles--;
+    if (processor.l2.data_hit.hit_cycles == 0)
+      processor.l2.data_hit.zero = 1;
+  }
+  printf("L2: This is niggggg: i=%d, miss_cycles=%d, v=%d\n", 0, processor.l2.misses[0].miss_cycles, processor.l2.misses[0].v);
+  printf("L2: This is niggggg: i=%d, miss_cycles=%d, v=%d\n", 1, processor.l2.misses[1].miss_cycles, processor.l2.misses[1].v);
+  //update all miss cycles
+  for (int i=0; i<16; i++){
+    if (processor.l2.misses[i].miss_cycles > 0){
+      printf("L2: This is some shit: i=%d, miss_cycles=%d, v=%d\n", i, processor.l2.misses[i].miss_cycles, processor.l2.misses[i].v);
+      printf("L2: right before seeting zero to 1, i=%d, processor.l2.misses[i].miss_cycles=%d\n", i, processor.l2.misses[i].miss_cycles);
+      processor.l2.misses[i].miss_cycles--;
+      if (processor.l2.misses[i].miss_cycles == 0){
+        printf("L2: SETTING THE ZERO TO 1\n");
+        processor.l2.misses[i].zero = 1;
+      }
+    }
+  }
+}
+
+//returns requester cpu and if its an inst or not
+void l2_data_ready_process(struct MSHR* miss){
+
+  //L2 insertion
+  l2_load(miss->pc_mem_addr);
+  printf("peeeeeeeeeeeeeeeeeeeeeeee: mc=%d\n", miss->miss_cycles);
+  //L1 insertion
+  if (miss->is_inst)
+    l1_inst_insertion(*miss);
+  else
+    l1_data_insertion(*miss);
+
+
+
+
+
+
+
+
+
+
+}
+
+//returns the number of cores that requested this miss
+void l1_inst_insertion(struct MSHR miss){
+  int num_requests = 0;
+  int load_0 = 0;
+  int load_1 = 0;
+  int load_2 = 0;
+  int load_3 = 0;
+  int current_core = core->core_num;
+
+  printf("inside inst_insert with cur_core=%d, pc=%x\n", current_core, miss.pc_mem_addr);
+  if (processor.core0.l1_inst_cache.miss.v && 
+    (processor.core0.l1_inst_cache.miss.pc_mem_addr >> 5) == (miss.pc_mem_addr >> 5)){
+      load_0 = 1;
+      num_requests++;
+  }
+  if (processor.core1.l1_inst_cache.miss.v && 
+    (processor.core1.l1_inst_cache.miss.pc_mem_addr >> 5) == (miss.pc_mem_addr >> 5)){
+      load_1 = 1;
+      num_requests++;
+  }
+  if (processor.core2.l1_inst_cache.miss.v && 
+    (processor.core2.l1_inst_cache.miss.pc_mem_addr >> 5) == (miss.pc_mem_addr >> 5)){
+      load_2 = 1;
+      num_requests++;
+  }
+  if (processor.core3.l1_inst_cache.miss.v && 
+    (processor.core3.l1_inst_cache.miss.pc_mem_addr >> 5) == (miss.pc_mem_addr >> 5)){
+      load_3 = 1;
+      num_requests++;
+  }
+
+  if (load_0){
+    set_active_core(0);
+    if (num_requests > 1) inst_load(miss.pc_mem_addr, SHARED);
+    else inst_load(miss.pc_mem_addr, EXCLUSIVE);
+  }
+  if (load_1){
+    set_active_core(1);
+    if (num_requests > 1) inst_load(miss.pc_mem_addr, SHARED);
+    else inst_load(miss.pc_mem_addr, EXCLUSIVE);
+  }
+  if (load_2){
+    set_active_core(2);
+    if (num_requests > 1) inst_load(miss.pc_mem_addr, SHARED);
+    else inst_load(miss.pc_mem_addr, EXCLUSIVE);
+  }
+  if (load_3){
+    set_active_core(3);
+
+    if (num_requests > 1) inst_load(miss.pc_mem_addr, SHARED);
+    else inst_load(miss.pc_mem_addr, EXCLUSIVE);
+  }
+
+  set_active_core(current_core);
+}
+
+//returns number of cores that requested this miss
+int l1_data_insertion(struct MSHR miss){
+  int num_requests = 0;
+  int load_0 = 0;
+  int load_1 = 0;
+  int load_2 = 0;
+  int load_3 = 0;
+  int current_core = core->core_num;
+
+  if (processor.core0.l1_data_cache.miss.v && 
+    (processor.core0.l1_data_cache.miss.pc_mem_addr >> 5) == (miss.pc_mem_addr >> 5)){
+      num_requests++;
+      load_0 = 1;
+  }
+  if (processor.core1.l1_data_cache.miss.v && 
+    (processor.core1.l1_data_cache.miss.pc_mem_addr >> 5) == (miss.pc_mem_addr >> 5)){
+      load_1 = 1;
+      num_requests++;
+  }
+  if (processor.core2.l1_data_cache.miss.v && 
+      (processor.core2.l1_data_cache.miss.pc_mem_addr >> 5) == (miss.pc_mem_addr >> 5)){
+      load_2 = 1;
+      num_requests++;
+  }
+  if (processor.core3.l1_data_cache.miss.v && 
+    (processor.core3.l1_data_cache.miss.pc_mem_addr >> 5) == (miss.pc_mem_addr >> 5)){
+      load_3 = 1;
+      num_requests++;
+  }
+
+  if (miss.is_write){
+    if (load_0){
+      set_active_core(0);
+      read_block_from_mem(miss.pc_mem_addr, core->transfer);
+      data_load(miss.pc_mem_addr, MODIFIED, core->transfer);
+    }
+    if (load_1){
+      set_active_core(1);
+      read_block_from_mem(miss.pc_mem_addr, core->transfer);
+      data_load(miss.pc_mem_addr, MODIFIED, core->transfer);
+    }
+    if (load_2){
+      set_active_core(2);
+      read_block_from_mem(miss.pc_mem_addr, core->transfer);
+      data_load(miss.pc_mem_addr, MODIFIED, core->transfer);
+    }
+    if (load_3){
+      set_active_core(3);
+      read_block_from_mem(miss.pc_mem_addr, core->transfer);
+      data_load(miss.pc_mem_addr, MODIFIED, core->transfer);
+    }
+  }
+  else {
+    if (load_0){
+      set_active_core(0);
+      read_block_from_mem(miss.pc_mem_addr, core->transfer);
+      if (num_requests > 1) data_load(miss.pc_mem_addr, SHARED, core->transfer);
+      else data_load(miss.pc_mem_addr, EXCLUSIVE, core->transfer);
+    }
+    if (load_1){
+      set_active_core(1);
+      read_block_from_mem(miss.pc_mem_addr, core->transfer);
+      if (num_requests > 1) data_load(miss.pc_mem_addr, SHARED, core->transfer);
+      else data_load(miss.pc_mem_addr, EXCLUSIVE, core->transfer);
+    }
+    if (load_2){
+      set_active_core(2);
+      read_block_from_mem(miss.pc_mem_addr, core->transfer);
+      if (num_requests > 1) data_load(miss.pc_mem_addr, SHARED, core->transfer);
+      else data_load(miss.pc_mem_addr, EXCLUSIVE, core->transfer);
+    }
+    if (load_3){
+      set_active_core(3);
+      read_block_from_mem(miss.pc_mem_addr, core->transfer);
+      if (num_requests > 1) data_load(miss.pc_mem_addr, SHARED, core->transfer);
+      else data_load(miss.pc_mem_addr, EXCLUSIVE, core->transfer);
+    }
+  }
+}
+
+void read_block_from_mem(uint32_t address, uint32_t* ptr){
+  uint32_t addr = address & 0xffffff00;
+  uint32_t temp;
+
+  for (int i=0; i<8; i++){
+    temp = mem_read_32(addr + i*4);
+    ptr[0 + i] = temp;
+  }
+
+}
+
+
+void write_block_to_mem(struct block* block){
+  uint32_t addr = block->pc_mem_addr;
+  for (int i=0; i<8; i++){
+    mem_write_32(addr + i*4, block->data[0 + i]);
+  }
+}
+///////////////
+//END HELPERS//
+///////////////
